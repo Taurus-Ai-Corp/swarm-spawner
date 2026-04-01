@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "swarm-spawner"
+version = "0.1.0"
+description = "Ephemeral AI agent orchestration with Hedera blockchain auditability"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "TAURUS AI Corp", email = "admin@taurusai.io"}
+]
+keywords = ["ai", "agents", "orchestration", "ephemeral", "swarm", "hedera", "blockchain", "post-quantum"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+requires-python = ">=3.10"
+dependencies = [
+    "event-emitter>=0.2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "ruff>=0.1.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/taurus-ai/swarm-spawner"
+Repository = "https://github.com/taurus-ai/swarm-spawner"
+
+[tool.setuptools.packages.find]
+where = ["."]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.pytest.ini_options]
+asyncio-mode = "auto"
+testpaths = ["tests"]

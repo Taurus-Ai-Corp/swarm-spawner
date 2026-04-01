@@ -1,0 +1,59 @@
+{
+  "name": "swarm-spawner",
+  "version": "0.1.0",
+  "description": "Ephemeral AI agent orchestration system with Hedera blockchain auditability",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./hedera": {
+      "import": "./dist/hedera-integration.js",
+      "types": "./dist/hedera-integration.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint src --ext .ts",
+    "format": "prettier --write 'src/**/*.ts'"
+  },
+  "keywords": [
+    "ai",
+    "agents",
+    "orchestration",
+    "ephemeral",
+    "swarm",
+    "hedera",
+    "blockchain",
+    "post-quantum",
+    "pqc"
+  ],
+  "author": "TAURUS AI Corp <admin@taurusai.io>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/taurus-ai/swarm-spawner"
+  },
+  "dependencies": {
+    "@hashgraph/sdk": "^2.77.0",
+    "@noble/post-quantum": "^0.6.0",
+    "events": "^3.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.0",
+    "eslint": "^8.56.0",
+    "@typescript-eslint/eslint-plugin": "^6.20.0",
+    "@typescript-eslint/parser": "^6.20.0",
+    "prettier": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

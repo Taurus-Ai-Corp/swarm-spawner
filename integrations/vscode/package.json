@@ -1,0 +1,77 @@
+{
+  "name": "swarm-spawner",
+  "displayName": "Swarm Spawner",
+  "description": "Ephemeral AI agent orchestration with Hedera blockchain auditability",
+  "version": "0.1.0",
+  "publisher": "taurus-ai",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "AI",
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:swarm-spawner.spawn",
+    "onCommand:swarm-spawner.status"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "swarm-spawner.spawn",
+        "title": "Swarm: Spawn Agents",
+        "description": "Spawn ephemeral agents for selected task"
+      },
+      {
+        "command": "swarm-spawner.status",
+        "title": "Swarm: Status",
+        "description": "Show swarm execution status"
+      },
+      {
+        "command": "swarm-spawner.stop",
+        "title": "Swarm: Stop All",
+        "description": "Stop all running agents"
+      }
+    ],
+    "configuration": {
+      "title": "Swarm Spawner",
+      "properties": {
+        "swarmSpawner.maxParallel": {
+          "type": "number",
+          "default": 5,
+          "description": "Maximum parallel agents"
+        },
+        "swarmSpawner.timeout": {
+          "type": "number",
+          "default": 120000,
+          "description": "Agent timeout in milliseconds"
+        },
+        "swarmSpawner.enableAuditTrail": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable Hedera HCS audit trail"
+        },
+        "swarmSpawner.hederaNetwork": {
+          "type": "string",
+          "default": "testnet",
+          "enum": ["testnet", "mainnet"],
+          "description": "Hedera network"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@hashgraph/sdk": "^2.77.0"
+  }
+}

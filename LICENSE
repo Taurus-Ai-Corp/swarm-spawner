@@ -1,0 +1,44 @@
+MIT License
+
+Copyright (c) 2026 TAURUS AI Corp
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+Patent Notice
+
+This software may be covered by one or more patents or pending patent 
+applications owned by TAURUS AI Corp. Use of this software does not grant 
+any license or rights under any patents. For patent licensing inquiries, 
+contact: licensing@taurusai.io
+
+---
+
+Hedera Integration Notice
+
+This software includes integration with Hedera Hashgraph network. Use of 
+Hedera services is subject to Hedera's Terms of Service. TAURUS AI Corp is 
+not affiliated with Hedera Hashgraph LLC or Hedera Token Service LLC.
+
+Post-Quantum Cryptography Notice
+
+This software implements post-quantum cryptographic algorithms (ML-KEM-768, 
+ML-DSA-65). These implementations are provided for educational and 
+demonstration purposes and have not been independently audited for security.

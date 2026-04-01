@@ -1,0 +1,25 @@
+[package]
+name = "swarm-spawner"
+version = "0.1.0"
+edition = "2021"
+description = "Ephemeral AI agent orchestration with Hedera blockchain auditability"
+authors = ["TAURUS AI Corp <admin@taurusai.io>"]
+license = "MIT"
+repository = "https://github.com/taurus-ai/swarm-spawner"
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1", features = ["full"] }
+chrono = "0.4"
+
+[dev-dependencies]
+tokio-test = "0.4"
+
+[lib]
+name = "swarm_spawner"
+path = "src/lib.rs"
+
+[[bin]]
+name = "swarm-spawner"
+path = "src/main.rs"
