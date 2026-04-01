@@ -1,7 +1,7 @@
-import { EventEmitter } from 'events';
-import { ModelRouter, ModelConfig } from './model-router.js';
-import { HederaIntegration, AuditEntry } from './hedera-integration.js';
-import { ResultAggregator, AggregatedResult } from './result-aggregator.js';
+import { EventEmitter } from "events";
+import { ModelRouter, ModelConfig } from "./model-router.js";
+import { HederaIntegration, AuditEntry } from "./hedera-integration.js";
+import { ResultAggregator, AggregatedResult } from "./result-aggregator.js";
 
 export interface EphemeralAgent {
   id: string;
@@ -9,7 +9,7 @@ export interface EphemeralAgent {
   model: ModelConfig;
   input: Record<string, unknown>;
   output?: unknown;
-  status: 'pending' | 'running' | 'completed' | 'failed';
+  status: "pending" | "running" | "completed" | "failed";
   createdAt: Date;
   completedAt?: Date;
   error?: string;
@@ -21,7 +21,7 @@ export interface SwarmConfig {
   retryAttempts: number;
   retryDelay: number;
   enableAuditTrail: boolean;
-  hederaNetwork: 'testnet' | 'mainnet';
+  hederaNetwork: "testnet" | "mainnet";
   pqcKeyPair?: {
     publicKey: string;
     privateKey: string;
@@ -33,9 +33,9 @@ export interface SpawnRequest {
     id: string;
     description: string;
     input: Record<string, unknown>;
-    modelTier?: 'fast' | 'balanced' | 'deep';
+    modelTier?: "fast" | "balanced" | "deep";
   }>;
-  strategy?: 'parallel' | 'sequential' | 'adaptive';
+  strategy?: "parallel" | "sequential" | "adaptive";
 }
 
 export class SwarmSpawner extends EventEmitter {
@@ -53,7 +53,7 @@ export class SwarmSpawner extends EventEmitter {
       retryAttempts: config.retryAttempts ?? 2,
       retryDelay: config.retryDelay ?? 1000,
       enableAuditTrail: config.enableAuditTrail ?? true,
-      hederaNetwork: config.hederaNetwork ?? 'testnet',
+      hederaNetwork: config.hederaNetwork ?? "testnet",
       pqcKeyPair: config.pqcKeyPair,
     };
     this.router = new ModelRouter();
@@ -68,7 +68,7 @@ export class SwarmSpawner extends EventEmitter {
     if (this.config.enableAuditTrail) {
       const entry = await this.hedera.logSwarmStart({
         taskCount: request.tasks.length,
-        strategy: request.strategy ?? 'parallel',
+        strategy: request.strategy ?? "parallel",
         timestamp: new Date().toISOString(),
       });
       auditEntries.push(entry);
@@ -76,14 +76,14 @@ export class SwarmSpawner extends EventEmitter {
 
     const agents = await this.routeAndSpawn(request.tasks);
 
-    if (request.strategy === 'sequential') {
+    if (request.strategy === "sequential") {
       await this.runSequential(agents, auditEntries);
     } else {
       await this.runParallel(agents, auditEntries);
     }
 
     const result = this.aggregator.aggregate(
-      Array.from(this.activeAgents.values())
+      Array.from(this.activeAgents.values()),
     );
 
     if (this.config.enableAuditTrail) {
@@ -94,19 +94,21 @@ export class SwarmSpawner extends EventEmitter {
       });
     }
 
-    this.emit('complete', result);
+    this.emit("complete", result);
     return result;
   }
 
-  private async routeAndSpawn(tasks: SpawnRequest['tasks']): Promise<EphemeralAgent[]> {
+  private async routeAndSpawn(
+    tasks: SpawnRequest["tasks"],
+  ): Promise<EphemeralAgent[]> {
     return tasks.map((task) => {
-      const model = this.router.selectModel(task.modelTier ?? 'balanced');
+      const model = this.router.selectModel(task.modelTier ?? "balanced");
       const agent: EphemeralAgent = {
         id: `agent-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         task: task.description,
         model,
         input: task.input,
-        status: 'pending',
+        status: "pending",
         createdAt: new Date(),
       };
       this.activeAgents.set(agent.id, agent);
@@ -116,18 +118,20 @@ export class SwarmSpawner extends EventEmitter {
 
   private async runParallel(
     agents: EphemeralAgent[],
-    auditEntries: AuditEntry[]
+    auditEntries: AuditEntry[],
   ): Promise<void> {
     const chunks = this.chunkArray(agents, this.config.maxParallel);
-    
+
     for (const chunk of chunks) {
-      await Promise.all(chunk.map((agent) => this.executeAgent(agent, auditEntries)));
+      await Promise.all(
+        chunk.map((agent) => this.executeAgent(agent, auditEntries)),
+      );
     }
   }
 
   private async runSequential(
     agents: EphemeralAgent[],
-    auditEntries: AuditEntry[]
+    auditEntries: AuditEntry[],
   ): Promise<void> {
     for (const agent of agents) {
       await this.executeAgent(agent, auditEntries);
@@ -136,35 +140,38 @@ export class SwarmSpawner extends EventEmitter {
 
   private async executeAgent(
     agent: EphemeralAgent,
-    auditEntries: AuditEntry[]
+    auditEntries: AuditEntry[],
   ): Promise<void> {
-    agent.status = 'running';
-    this.emit('agent:start', agent);
+    agent.status = "running";
+    this.emit("agent:start", agent);
 
     try {
       const result = await this.executeWithTimeout(agent);
       agent.output = result;
-      agent.status = 'completed';
+      agent.status = "completed";
       agent.completedAt = new Date();
 
       if (this.config.enableAuditTrail && this.config.pqcKeyPair) {
-        const entry = await this.hedera.signAndLog(agent, this.config.pqcKeyPair);
+        const entry = await this.hedera.signAndLog(
+          agent,
+          this.config.pqcKeyPair,
+        );
         auditEntries.push(entry);
       }
     } catch (error) {
-      agent.status = 'failed';
+      agent.status = "failed";
       agent.error = error instanceof Error ? error.message : String(error);
       agent.completedAt = new Date();
     }
 
-    this.emit('agent:complete', agent);
+    this.emit("agent:complete", agent);
   }
 
   private async executeWithTimeout(agent: EphemeralAgent): Promise<unknown> {
     return new Promise((resolve, reject) => {
       const timer = setTimeout(
         () => reject(new Error(`Agent ${agent.id} timed out`)),
-        this.config.timeout
+        this.config.timeout,
       );
 
       this.invokeModel(agent)
