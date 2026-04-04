@@ -10,7 +10,7 @@ Spawn. Certify. Execute. Sign. Audit. Die.
 
 [![npm version](https://img.shields.io/npm/v/swarm-spawner)](https://www.npmjs.com/package/swarm-spawner)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-46%20passed-brightgreen)]()
+[![CI](https://github.com/Taurus-Ai-Corp/swarm-spawner/actions/workflows/ci.yml/badge.svg)](https://github.com/Taurus-Ai-Corp/swarm-spawner/actions/workflows/ci.yml)
 [![TypeScript](https://img.shields.io/badge/TypeScript-first-blue)]()
 
 ---
