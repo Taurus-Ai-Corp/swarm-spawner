@@ -1,37 +1,10 @@
-// PQC stub - replace with @noble/post-quantum/kyber when ready for production
-// import { mlkem768 } from '@noble/post-quantum/kyber';
-
-interface PQCKeyPair {
-  publicKey: Uint8Array;
-  secretKey: Uint8Array;
-}
-
-async function generatePQCKeyPair(seed: Uint8Array): Promise<PQCKeyPair> {
-  // Stub: In production, use @noble/post-quantum/kyber
-  // const keyPair = mlkem768.generateKeyPair(seed);
-  const publicKey = new Uint8Array(32);
-  const secretKey = new Uint8Array(32);
-  publicKey.set(seed.slice(0, 32));
-  secretKey.set(seed.slice(0, 32));
-  return { publicKey, secretKey };
-}
-
-async function pqcSign(
-  message: Uint8Array,
-  _secretKey: Uint8Array,
-): Promise<Uint8Array> {
-  // Stub: In production, use mlkem768.sign(message, secretKey)
-  const sig = new Uint8Array(message.length + 32);
-  sig.set(message);
-  return sig;
-}
-
 // Hedera SDK imports
 import {
   Client,
   AccountId,
   PrivateKey,
   TopicId,
+  TopicCreateTransaction,
   TopicMessageSubmitTransaction,
 } from "@hashgraph/sdk";
 
@@ -39,7 +12,7 @@ export interface AuditEntry {
   id: string;
   timestamp: string;
   agentId: string;
-  action: string;
+  action: "SWARM_START" | "SWARM_COMPLETE" | "AGENT_BIRTH" | "AGENT_DEATH" | "AGENT_COMPLETE";
   payload: string;
   signature?: string;
   topicId?: string;
@@ -74,12 +47,13 @@ export class HederaIntegration {
     if (operatorId && operatorKey) {
       this.operatorId = AccountId.fromString(operatorId);
       this.operatorKey = PrivateKey.fromString(operatorKey);
-      this.client = Client.forTestnet().setOperator(
-        this.operatorId,
-        this.operatorKey,
-      );
+      this.client =
+        network === "mainnet"
+          ? Client.forMainnet().setOperator(this.operatorId, this.operatorKey)
+          : Client.forTestnet().setOperator(this.operatorId, this.operatorKey);
     } else {
-      this.client = Client.forTestnet();
+      this.client =
+        network === "mainnet" ? Client.forMainnet() : Client.forTestnet();
     }
   }
 
@@ -90,10 +64,9 @@ export class HederaIntegration {
       );
     }
 
-    const transaction = new TopicMessageSubmitTransaction({
-      topicId: undefined,
-      message: `Swarm Spawner Audit Topic: ${description}`,
-    });
+    const transaction = new TopicCreateTransaction().setTopicMemo(
+      `Swarm Spawner Audit: ${description}`,
+    );
 
     const response = await transaction.execute(this.client);
     const receipt = await response.getReceipt(this.client);
@@ -161,56 +134,38 @@ export class HederaIntegration {
     return this.submitAuditEntry(entry);
   }
 
+  /**
+   * @deprecated Use PQCIdentityManager for real ML-DSA-65 signing.
+   * This legacy method is retained only for backward compatibility
+   * with v0.1.0 consumers. It provides NO cryptographic security.
+   */
   async signWithPQC(
     payload: string,
-    keyPair: { publicKey: string; privateKey: string },
+    _keyPair: { publicKey: string; privateKey: string },
   ): Promise<PQCSigningResult> {
-    const encoder = new TextEncoder();
-    const message = encoder.encode(payload);
-
-    const privateKeyBytes = Uint8Array.from(atob(keyPair.privateKey), (c) =>
-      c.charCodeAt(0),
+    console.warn(
+      "[Hedera] signWithPQC() is deprecated and provides no security. Use PQCIdentityManager instead.",
     );
-    const keySeed = privateKeyBytes.slice(0, 32);
-    const keyPairPQC = await generatePQCKeyPair(keySeed);
-
-    const signature = await pqcSign(message, keyPairPQC.secretKey);
-
     return {
-      signature: btoa(String.fromCharCode(...signature)),
-      publicKey: keyPair.publicKey,
+      signature: "(deprecated-no-crypto)",
+      publicKey: _keyPair.publicKey,
       timestamp: new Date().toISOString(),
     };
   }
 
+  /**
+   * @deprecated Use PQCIdentityManager.verify() for real ML-DSA-65 verification.
+   * This method always returns false to prevent false-positive trust.
+   */
   async verifyPQCSignature(
-    payload: string,
-    signature: string,
-    publicKey: string,
+    _payload: string,
+    _signature: string,
+    _publicKey: string,
   ): Promise<boolean> {
-    try {
-      const encoder = new TextEncoder();
-      const message = encoder.encode(payload);
-      const sigBytes = Uint8Array.from(atob(signature), (c) => c.charCodeAt(0));
-      const pubKeyBytes = Uint8Array.from(atob(publicKey), (c) =>
-        c.charCodeAt(0),
-      );
-
-      // Stub verification - always true for demo
-      return (
-        message.length > 0 && sigBytes.length > 0 && pubKeyBytes.length > 0
-      );
-    } catch {
-      return false;
-    }
-  }
-
-  async mintCredential(
-    agentId: string,
-    metadata: Record<string, unknown>,
-  ): Promise<string> {
-    console.log(`[Hedera] Minting credential for agent ${agentId}`, metadata);
-    return `credential-${agentId}-${Date.now()}`;
+    console.warn(
+      "[Hedera] verifyPQCSignature() is deprecated. Use PQCIdentityManager.verify() instead.",
+    );
+    return false;
   }
 
   private async submitAuditEntry(entry: AuditEntry): Promise<AuditEntry> {
@@ -242,4 +197,3 @@ export class HederaIntegration {
   }
 }
 
-export type { Client, AccountId, PrivateKey, TopicId };

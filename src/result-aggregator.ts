@@ -61,7 +61,10 @@ export class ResultAggregator {
       successCount: results.reduce((sum, r) => sum + r.successCount, 0),
       failureCount: results.reduce((sum, r) => sum + r.failureCount, 0),
       successRate:
-        results.reduce((sum, r) => sum + r.successRate, 0) / results.length,
+        results.reduce((sum, r) => sum + r.totalAgents, 0) > 0
+          ? results.reduce((sum, r) => sum + r.successCount, 0) /
+            results.reduce((sum, r) => sum + r.totalAgents, 0)
+          : 0,
       totalDuration: results.reduce((sum, r) => sum + r.totalDuration, 0),
       results: results.flatMap((r) => r.results),
       errors: results.flatMap((r) => r.errors),

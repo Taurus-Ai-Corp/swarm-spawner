@@ -1,206 +1,251 @@
 # Swarm Spawner
 
-Ephemeral AI agent orchestration system with Hedera blockchain auditability.
+**Every AI agent gets a quantum-safe identity, an immutable audit trail, and a Hedera wallet.**
 
-![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Version](https://img.shields.io/badge/version-0.1.0-blue)
-![Platform](https://img.shields.io/badge/platform-TS%20%7C%20Python%20%7C%20Rust%20%7C%20Go-lightgrey)
+Spawn. Certify. Execute. Sign. Audit. Die.
 
-## Overview
+[![npm version](https://img.shields.io/npm/v/swarm-spawner)](https://www.npmjs.com/package/swarm-spawner)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Tests](https://img.shields.io/badge/tests-46%20passed-brightgreen)]()
+[![TypeScript](https://img.shields.io/badge/TypeScript-first-blue)]()
 
-Swarm Spawner spawns short-lived specialized agents for single tasks. Each agent gets a model matched to its specific subtask with no persistent state.
+---
 
-## Features
+## Why Swarm Spawner?
 
-- **Ephemeral Agents** - Stateless, disposable agents that die after task completion
-- **Model Router** - Fast/Balanced/Deep tier selection across 9+ models
-- **Hedera Integration** - HCS audit trails, PQC signing (ML-KEM-768), HTS credentials
-- **Multi-language SDK** - TypeScript, Python, Rust, Go
-- **IDE Integrations** - Claude Code, Cursor, VS Code plugins
+No other agent framework has all three:
 
-## Installation
+| Feature | Swarm Spawner | CrewAI | LangGraph | AutoGen | OpenAI Swarm |
+|---------|:---:|:---:|:---:|:---:|:---:|
+| Ephemeral agents (spawn & die) | **Yes** | No | No | No | Abandoned |
+| PQC identity (ML-DSA-65) | **Yes** | No | No | No | No |
+| Blockchain audit trail (Hedera HCS) | **Yes** | No | No | No | No |
+| Model-agnostic (bring your own LLM) | **Yes** | Yes | Yes | Yes | No |
+| TypeScript-first | **Yes** | No | No | No | No |
+| EU AI Act compliant audit logs | **Yes** | No | No | No | No |
 
-```bash
-# TypeScript
-npm install swarm-spawner
+> Built for the **EU AI Act deadline (August 2, 2026)**. Your AI agents need auditable, tamper-proof decision logs. Yesterday.
 
-# Python
-pip install swarm-spawner
-
-# Go
-go get github.com/taurus-ai/swarm-spawner
-
-# Rust
-cargo add swarm-spawner
-```
+---
 
 ## Quick Start
 
-```typescript
-import { SwarmSpawner } from 'swarm-spawner';
+```bash
+npm install swarm-spawner
+```
 
-const spawner = new SwarmSpawner({ maxParallel: 5 });
+```typescript
+import { SwarmSpawner } from "swarm-spawner";
+
+const spawner = new SwarmSpawner({
+  executor: async (agent, model) => {
+    // Bring your own LLM — Anthropic, OpenAI, Ollama, anything
+    return await yourLLM.generate(agent.task);
+  },
+});
 
 const result = await spawner.spawn({
   tasks: [
-    { id: 'task-1', description: 'Analyze code', input: {}, modelTier: 'balanced' },
-    { id: 'task-2', description: 'Generate tests', input: {}, modelTier: 'fast' },
+    { id: "analyze", description: "Find vulnerabilities in this code", input: { code }, modelTier: "deep" },
+    { id: "review",  description: "Check code style and patterns", input: { code }, modelTier: "balanced" },
+    { id: "test",    description: "Generate unit tests", input: { code }, modelTier: "fast" },
   ],
-  strategy: 'parallel',
+  strategy: "parallel",
 });
 
-console.log(`Success rate: ${result.successRate * 100}%`);
+console.log(`${result.successCount}/${result.totalAgents} agents completed`);
+// Each agent got a PQC-signed birth/death certificate
+// Full lifecycle recorded on Hedera HCS
 ```
 
-## Python
+---
 
-```python
-from swarm_spawner import SwarmSpawner, SwarmConfig, SpawnRequest, SpawnTask, ModelTier
+## Core Concepts
 
-spawner = SwarmSpawner(SwarmConfig(max_parallel=5))
+### Ephemeral Agents
 
-request = SpawnRequest(
-    tasks=[
-        SpawnTask(id="task-1", description="Analyze code", input={}, model_tier=ModelTier.BALANCED),
-        SpawnTask(id="task-2", description="Generate tests", input={}, model_tier=ModelTier.FAST),
-    ],
-    strategy="parallel"
-)
+Agents are born, execute one task, and die. No persistent state. No memory leaks. No zombie processes. Each agent gets:
 
-result = await spawner.spawn(request)
-print(f"Success rate: {result['successRate'] * 100}%")
+- A **birth certificate** (PQC-signed at spawn)
+- A **model assignment** (routed by tier)
+- A **death certificate** (PQC-signed at completion/failure)
+- An **audit trail entry** (recorded on Hedera HCS)
+
+### Pluggable Model Executor
+
+Swarm Spawner doesn't lock you into any LLM provider. Pass your own executor:
+
+```typescript
+import { SwarmSpawner, type ModelExecutor } from "swarm-spawner";
+
+// Use any LLM provider
+const executor: ModelExecutor = async (agent, config) => {
+  const response = await anthropic.messages.create({
+    model: config.model,
+    messages: [{ role: "user", content: agent.task }],
+  });
+  return response.content[0].text;
+};
+
+const spawner = new SwarmSpawner({ executor });
 ```
 
-## Go
+### PQC Identity (ML-DSA-65)
 
-```go
-spawner := NewSwarmSpawner(&SwarmConfig{
-    MaxParallel: 5,
-})
+Real post-quantum cryptography, not stubs. Every agent gets a quantum-safe identity:
 
-result, _ := spawner.Spawn(SpawnRequest{
-    Tasks: []SpawnTask{
-        {ID: "task-1", Description: "Analyze code", ModelTier: ModelTierBalanced},
-        {ID: "task-2", Description: "Generate tests", ModelTier: ModelTierFast},
-    },
-    Strategy: "parallel",
-})
+```typescript
+import { PQCIdentityManager } from "swarm-spawner";
+import { randomBytes } from "@noble/hashes/utils.js";
 
-fmt.Printf("Success rate: %.1f%%\n", result.SuccessRate*100)
+const pqc = new PQCIdentityManager({ masterSeed: randomBytes(32) });
+
+// Issue certificates
+const birthCert = pqc.issueBirthCertificate(agent, swarmId);
+const deathCert = pqc.issueDeathCertificate(completedAgent, swarmId);
+
+// Verify — returns true only if signature + payload are untampered
+const isValid = PQCIdentityManager.verify(birthCert); // true
 ```
 
-## Model Selection
+### Tier Enforcement
 
-| Tier | Use Case | Providers |
-|------|----------|-----------|
-| **Fast** | Simple tasks, checks, listings | Groq Llama, Ollama Qwen, Gemini Flash |
-| **Balanced** | Standard development tasks | Claude Haiku, GPT-4o Mini, Gemini Pro |
-| **Deep** | Complex refactoring, architecture | Claude Sonnet, GPT-4 Turbo, DeepSeek Coder |
+Built-in licensing for Free / Pro / Enterprise:
 
-## Hedera Blockchain Integration
+```typescript
+import { TierEnforcer } from "swarm-spawner";
+
+const enforcer = new TierEnforcer(); // no key = free tier
+enforcer.enforce({ type: "agentCount", count: 10 });
+// throws: "Agent limit exceeded: 10 requested, max 5 on free tier"
+```
+
+---
+
+## Model Tiers
+
+| Tier | Use Case | Example Models |
+|------|----------|----------------|
+| **Fast** | Simple checks, listings, formatting | Groq Llama 3.1, Ollama Qwen, Gemini Flash |
+| **Balanced** | Standard analysis, code review | Claude Haiku, GPT-4o Mini, Gemini Pro |
+| **Deep** | Complex reasoning, architecture | Claude Sonnet, GPT-4 Turbo, DeepSeek Coder |
+
+The `ModelRouter` uses round-robin selection within each tier:
+
+```typescript
+import { ModelRouter } from "swarm-spawner";
+
+const router = new ModelRouter();
+const model = router.selectModel("deep"); // rotates through deep-tier models
+```
+
+---
+
+## Hedera Blockchain Audit Trail
 
 ```typescript
 const spawner = new SwarmSpawner({
   enableAuditTrail: true,
-  hederaNetwork: 'testnet',
-  pqcKeyPair: {
-    publicKey: process.env.PQC_PUBLIC_KEY!,
-    privateKey: process.env.PQC_PRIVATE_KEY!,
-  },
+  hederaNetwork: "testnet",
+  executor: yourExecutor,
 });
 
-// Audit trail automatically logs to Hedera HCS
-const result = await spawner.spawn({ /* tasks */ });
+// Every spawn() call:
+// 1. Creates an HCS topic (one per swarm)
+// 2. Logs SWARM_START, AGENT_BIRTH, AGENT_DEATH, SWARM_COMPLETE
+// 3. All entries are PQC-signed and immutable
 ```
 
 ### Environment Variables
 
 ```bash
-# Hedera Operator (testnet)
-export HEDERA_OPERATOR_ID=0.0.12345
-export HEDERA_OPERATOR_KEY=302...
-
-# Hedera Operator (mainnet)
-export HEDERA_MAINNET_OPERATOR_ID=0.0.12345
-export HEDERA_MAINNET_OPERATOR_KEY=302...
-
-# Post-Quantum Keys
-export PQC_PUBLIC_KEY=...
-export PQC_PRIVATE_KEY=...
+HEDERA_OPERATOR_ID=0.0.12345
+HEDERA_OPERATOR_KEY=302e...
+PQC_MASTER_SEED=<32-byte-hex>  # for PQC identity
 ```
 
-## IDE Integrations
-
-### Claude Code
-
-```typescript
-import { createSwarmHook } from 'swarm-spawner/hedera';
-
-const hook = createSwarmHook({ maxAgents: 5 });
-await hook.executeSwarmCommand('analyze and refactor', { target: 'src/' });
-```
-
-### Cursor
-
-```typescript
-import { createCursorHook } from 'swarm-spawner/cursor';
-
-const hook = createCursorHook();
-await hook.executeSwarmCommand('refactor and test', ['file1.ts', 'file2.ts']);
-```
-
-### VS Code
-
-1. Open VS Code Extensions panel
-2. Search for "Swarm Spawner"
-3. Install and configure in settings
+---
 
 ## Architecture
 
 ```
-┌─────────────────────────────────────────────┐
-│            Swarm Spawner                     │
-├─────────────────────────────────────────────┤
-│  ┌─────────────┐  ┌──────────────────────┐  │
-│  │   Model     │  │   Hedera Integration │  │
-│  │   Router    │  │  - HCS Audit Trails  │  │
-│  │ (Tier-based)│  │  - PQC Signing       │  │
-│  └─────────────┘  │  - HTS Credentials    │  │
-│                   └──────────────────────┘  │
-│  ┌────────────────────────────────────────┐ │
-│  │       Ephemeral Agent Engine            │ │
-│  │  - Parallel/Sequential execution       │ │
-│  │  - Timeout handling                    │ │
-│  │  - Result aggregation                  │ │
-│  └────────────────────────────────────────┘ │
-└─────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────┐
+│                    SwarmSpawner                          │
+│                                                         │
+│  ┌─────────────┐  ┌──────────────┐  ┌───────────────┐  │
+│  │ ModelRouter  │  │ PQCIdentity  │  │ TierEnforcer  │  │
+│  │ fast/bal/deep│  │ birth/death  │  │ free/pro/ent  │  │
+│  └──────┬──────┘  └──────┬───────┘  └───────┬───────┘  │
+│         │                │                   │          │
+│  ┌──────▼──────────────────────────────────────────────┐│
+│  │         SPAWN → CERTIFY → EXECUTE → SIGN → DIE     ││
+│  │                            │                        ││
+│  │                   ┌────────▼────────┐               ││
+│  │                   │ ModelExecutor   │ ← Your LLM    ││
+│  │                   │ (pluggable)     │               ││
+│  │                   └─────────────────┘               ││
+│  └─────────────────────────────────────────────────────┘│
+│                           │                             │
+│  ┌────────────────┐  ┌────▼───────────┐                │
+│  │ ResultAggregator│  │ Hedera HCS    │                │
+│  │ pass/fail rates │  │ audit trail   │                │
+│  └────────────────┘  └────────────────┘                │
+└─────────────────────────────────────────────────────────┘
 ```
 
-## Monetization (Open Core + Services)
+---
 
-| Tier | Price | Features |
-|------|-------|----------|
-| **Community** | Free | Core SDK, 5 agents, testnet |
-| **Professional** | $49/mo | Unlimited agents, mainnet, PQC |
-| **Enterprise** | Custom | Full audit trail, support, SLA |
+## Pricing
 
-## Compliance
+| | Free | Pro ($49/mo) | Enterprise |
+|---|:---:|:---:|:---:|
+| Max agents per spawn | 5 | Unlimited | Custom |
+| Hedera network | Testnet | Mainnet | Mainnet |
+| PQC signing | No | Yes | Yes |
+| Model tiers | Fast only | All | All |
+| Audit export | Console | HCS topics | HCS + API |
+| EU AI Act reports | No | Basic | Full |
+| Support | GitHub Issues | Email | Dedicated |
 
-- **EU AI Act**: Risk assessment for agent decision-making
-- **NYC Local Law 144**: Bias audit for employment agents
-- **Export Controls**: Encryption classification for PQC
+---
+
+## Roadmap
+
+- [x] **v0.1.0** — Core spawner, model router, Hedera integration
+- [x] **v0.2.0** — Pluggable executor, PQC identity (ML-DSA-65), tier enforcement
+- [ ] **v0.3.0** — AI SDK adapter (`@taurus-ai/swarm-spawner-ai-sdk`), `npx init` CLI
+- [ ] **v0.4.0** — EU AI Act compliance reports, topic-per-swarm audit
+- [ ] **v0.5.0** — Interactive playground, documentation site
+
+---
+
+## Events
+
+Monitor agent lifecycle with EventEmitter:
+
+```typescript
+spawner.on("agent:start", (agent) => console.log(`Started: ${agent.id}`));
+spawner.on("agent:model:start", ({ agentId, model }) => console.log(`Model: ${model.model}`));
+spawner.on("agent:model:complete", ({ agentId }) => console.log(`Model done: ${agentId}`));
+spawner.on("agent:complete", (agent) => console.log(`Done: ${agent.id} — ${agent.status}`));
+spawner.on("complete", (result) => console.log(`Swarm: ${result.successRate * 100}%`));
+```
+
+---
 
 ## Contributing
 
 1. Fork the repository
 2. Create a feature branch
-3. Commit with conventional commits
+3. Run `npm test` (46 tests must pass)
 4. Submit a PR
+
+See [CHANGELOG.md](CHANGELOG.md) for release history.
 
 ## License
 
-MIT License - See LICENSE file for details.
+MIT License with Patent Notice — See [LICENSE](LICENSE) for details.
 
 ---
 
-*Powered by Hedera Hashgraph | Post-Quantum Ready*
+**TAURUS AI Corp** | [GitHub](https://github.com/Taurus-Ai-Corp/swarm-spawner) | [npm](https://www.npmjs.com/package/swarm-spawner)

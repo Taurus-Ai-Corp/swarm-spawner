@@ -92,7 +92,6 @@ const MODEL_REGISTRY: Record<ModelTier, ModelConfig[]> = {
 
 export class ModelRouter {
   private lastUsed: Map<ModelTier, number> = new Map();
-  private cache: Map<string, ModelConfig> = new Map();
 
   selectModel(tier: ModelTier): ModelConfig {
     const models = MODEL_REGISTRY[tier];
@@ -102,27 +101,9 @@ export class ModelRouter {
     return model;
   }
 
-  selectModelForTask(taskComplexity: number, contextSize: number): ModelConfig {
-    if (taskComplexity < 3 && contextSize < 5000) {
-      return this.selectModel("fast");
-    } else if (taskComplexity < 7 && contextSize < 50000) {
-      return this.selectModel("balanced");
-    } else {
-      return this.selectModel("deep");
-    }
-  }
-
   private roundRobinIndex(tier: ModelTier, max: number): number {
     const last = this.lastUsed.get(tier) ?? -1;
     return (last + 1) % max;
-  }
-
-  getCachedModel(cacheKey: string): ModelConfig | undefined {
-    return this.cache.get(cacheKey);
-  }
-
-  cacheModel(cacheKey: string, model: ModelConfig): void {
-    this.cache.set(cacheKey, model);
   }
 
   getModelsByProvider(provider: ModelConfig["provider"]): ModelConfig[] {

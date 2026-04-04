@@ -30,3 +30,9 @@ Thumbs.db
 # Hedera keys (never commit)
 *.pem
 *.key
+
+# Generated
+.codemap/
+demo.tape
+src/example.ts
+src/pqc-demo.ts

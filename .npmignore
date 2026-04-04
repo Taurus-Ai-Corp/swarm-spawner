@@ -1,0 +1,30 @@
+# Exclude development files
+.git*
+.github/
+.vscode/
+.ruff_cache/
+examples/
+tests/
+src/
+src-go/
+src-rs/
+integrations/
+docs/
+*.md
+*.yml
+*.json
+*.toml
+*.lock
+*.pyc
+__pycache__/
+pyproject.toml
+SKILL.md
+.eslintrc.json
+vitest.config.ts
+.codemap/
+
+# Include essential files
+!README.md
+!LICENSE
+!dist/
+!package.json
