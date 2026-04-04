@@ -4,6 +4,10 @@
 
 Spawn. Certify. Execute. Sign. Audit. Die.
 
+<p align="center">
+  <img src="demo.gif" alt="Swarm Spawner Demo" width="900" />
+</p>
+
 [![npm version](https://img.shields.io/npm/v/swarm-spawner)](https://www.npmjs.com/package/swarm-spawner)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Tests](https://img.shields.io/badge/tests-46%20passed-brightgreen)]()
