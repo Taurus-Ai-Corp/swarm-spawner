@@ -36,3 +36,9 @@ Thumbs.db
 demo.tape
 src/example.ts
 src/pqc-demo.ts
+
+# Brainstorm companion sessions
+.superpowers/
+
+# Pages build
+_site/

@@ -12,6 +12,18 @@ Spawn. Certify. Execute. Sign. Audit. Die.
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![CI](https://github.com/Taurus-Ai-Corp/swarm-spawner/actions/workflows/ci.yml/badge.svg)](https://github.com/Taurus-Ai-Corp/swarm-spawner/actions/workflows/ci.yml)
 [![TypeScript](https://img.shields.io/badge/TypeScript-first-blue)]()
+[![Try it live](https://img.shields.io/badge/Playground-Try_it_live-00ffa3?style=for-the-badge)](https://taurus-ai-corp.github.io/swarm-spawner/)
+
+---
+
+## Interactive Playground
+
+**[Try the playground](https://taurus-ai-corp.github.io/swarm-spawner/)** — spawn PQC-certified agents in your browser with real ML-DSA-65 cryptography. No backend, no API keys, no signup.
+
+- Configure tasks, strategy, model tiers, and pricing tiers
+- Watch the full lifecycle: ENFORCE -> ROUTE -> CERTIFY BIRTH -> EXECUTE -> CERTIFY DEATH -> AUDIT -> DIE
+- Inspect real ML-DSA-65 signatures (3,309 bytes) and verify them live
+- Copy generated TypeScript code directly into your project
 
 ---
 
