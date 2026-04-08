@@ -250,6 +250,21 @@ spawner.on("complete", (result) => console.log(`Swarm: ${result.successRate * 10
 
 ---
 
+## Security
+
+### Known Advisory: `elliptic` (Low Severity)
+
+`npm audit` reports 8 low-severity advisories for the `elliptic` package ([GHSA-848j-6mx2-7j84](https://github.com/advisories/GHSA-848j-6mx2-7j84)). These are **not exploitable** in Swarm Spawner:
+
+- **Root cause**: `@hashgraph/sdk` → `@ethersproject/signing-key` → `elliptic` (ECDSA timing weakness)
+- **Why it doesn't apply**: Swarm Spawner uses **ML-DSA-65** (lattice-based, NIST FIPS 204) for all cryptographic operations. No code path in this package calls `elliptic` or any ECDSA function.
+- **Why it's not patched**: `@ethersproject` v5 is EOL. The fix requires `@hashgraph/sdk` to migrate to `ethers` v6 — tracked in their repo.
+- **Mitigation**: If your threat model requires zero advisories, pin `@hashgraph/sdk` as optional or use Swarm Spawner without Hedera integration (`enableAuditTrail: false`).
+
+To verify: `npm audit` should show only `elliptic`-chain advisories, all low severity.
+
+---
+
 ## Contributing
 
 1. Fork the repository
