@@ -19,7 +19,7 @@
 - `src/pqc-identity.ts` — ML-DSA-65 birth/death certificates (key cache enabled)
 - `src/tier-enforcer.ts` — Free/Pro/Enterprise JWT gating
 - `src/license.ts` — ML-DSA-65 signed license keys (asymmetric — public key verifies)
-- `src/hedera-integration.ts` — HCS audit trails (legacy PQC stubs deprecated)
+- `src/hedera-integration.ts` — HCS audit trails via `@hiero-ledger/sdk` (legacy PQC stubs deprecated)
 - `src/model-router.ts` — Fast/balanced/deep tier selection (round-robin)
 - `src/result-aggregator.ts` — Pass/fail/duration aggregation
 

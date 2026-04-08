@@ -1,4 +1,4 @@
-// Hedera SDK imports
+// Hiero SDK imports (formerly @hashgraph/sdk — migrated to Linux Foundation namespace)
 import {
   Client,
   AccountId,
@@ -6,7 +6,7 @@ import {
   TopicId,
   TopicCreateTransaction,
   TopicMessageSubmitTransaction,
-} from "@hashgraph/sdk";
+} from "@hiero-ledger/sdk";
 
 export interface AuditEntry {
   id: string;

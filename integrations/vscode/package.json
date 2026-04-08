@@ -72,6 +72,6 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "@hashgraph/sdk": "^2.77.0"
+    "@hiero-ledger/sdk": "^2.82.0"
   }
 }
