@@ -1,4 +1,4 @@
-import type { EphemeralAgent } from "./spawner.js";
+import type { EphemeralAgent } from "./types.js";
 
 export interface AggregatedResult {
   totalAgents: number;

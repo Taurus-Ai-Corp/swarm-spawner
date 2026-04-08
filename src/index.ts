@@ -4,11 +4,11 @@
 export {
   SwarmSpawner,
   defaultExecutor,
-  type EphemeralAgent,
   type SwarmConfig,
   type SpawnRequest,
-  type ModelExecutor,
 } from "./spawner.js";
+
+export type { EphemeralAgent, ModelExecutor } from "./types.js";
 
 export { ModelRouter, type ModelConfig } from "./model-router.js";
 

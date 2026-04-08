@@ -1,37 +1,15 @@
 import { EventEmitter } from "events";
-import { ModelRouter, ModelConfig } from "./model-router.js";
+import { ModelRouter } from "./model-router.js";
 import { HederaIntegration, AuditEntry } from "./hedera-integration.js";
 import { ResultAggregator, AggregatedResult } from "./result-aggregator.js";
 import {
   PQCIdentityManager,
   type PQCIdentityConfig,
-  type SignedCertificate,
 } from "./pqc-identity.js";
 import { TierEnforcer, type Tier } from "./tier-enforcer.js";
+import type { EphemeralAgent, ModelExecutor } from "./types.js";
 
-export interface EphemeralAgent {
-  id: string;
-  task: string;
-  model: ModelConfig;
-  input: Record<string, unknown>;
-  output?: unknown;
-  status: "pending" | "running" | "completed" | "failed";
-  createdAt: Date;
-  completedAt?: Date;
-  error?: string;
-  birthCertificate?: SignedCertificate;
-  deathCertificate?: SignedCertificate;
-}
-
-/**
- * Pluggable model executor function.
- * Adapters (AI SDK, Ollama, custom) implement this signature
- * and pass it via SwarmConfig.executor.
- */
-export type ModelExecutor = (
-  agent: EphemeralAgent,
-  config: ModelConfig,
-) => Promise<unknown>;
+export type { EphemeralAgent, ModelExecutor };
 
 /**
  * Default echo executor — mirrors the original stub behavior.
