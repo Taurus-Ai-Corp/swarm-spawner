@@ -8,10 +8,11 @@ Spawn. Certify. Execute. Sign. Audit. Die.
   <img src="demo.gif" alt="Swarm Spawner Demo" width="900" />
 </p>
 
-[![npm version](https://img.shields.io/npm/v/swarm-spawner)](https://www.npmjs.com/package/swarm-spawner)
+[![npm version](https://img.shields.io/npm/v/@taurus-ai/swarm-spawner)](https://www.npmjs.com/package/@taurus-ai/swarm-spawner)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![CI](https://github.com/Taurus-Ai-Corp/swarm-spawner/actions/workflows/ci.yml/badge.svg)](https://github.com/Taurus-Ai-Corp/swarm-spawner/actions/workflows/ci.yml)
 [![TypeScript](https://img.shields.io/badge/TypeScript-first-blue)]()
+[![codecov](https://codecov.io/gh/Taurus-Ai-Corp/swarm-spawner/graph/badge.svg)](https://codecov.io/gh/Taurus-Ai-Corp/swarm-spawner)
 [![Try it live](https://img.shields.io/badge/Playground-Try_it_live-00ffa3?style=for-the-badge)](https://taurus-ai-corp.github.io/swarm-spawner/)
 
 ---
@@ -47,11 +48,11 @@ No other agent framework has all three:
 ## Quick Start
 
 ```bash
-npm install swarm-spawner
+npm install @taurus-ai/swarm-spawner
 ```
 
 ```typescript
-import { SwarmSpawner } from "swarm-spawner";
+import { SwarmSpawner } from "@taurus-ai/swarm-spawner";
 
 const spawner = new SwarmSpawner({
   executor: async (agent, model) => {
@@ -92,7 +93,7 @@ Agents are born, execute one task, and die. No persistent state. No memory leaks
 Swarm Spawner doesn't lock you into any LLM provider. Pass your own executor:
 
 ```typescript
-import { SwarmSpawner, type ModelExecutor } from "swarm-spawner";
+import { SwarmSpawner, type ModelExecutor } from "@taurus-ai/swarm-spawner";
 
 // Use any LLM provider
 const executor: ModelExecutor = async (agent, config) => {
@@ -111,7 +112,7 @@ const spawner = new SwarmSpawner({ executor });
 Real post-quantum cryptography, not stubs. Every agent gets a quantum-safe identity:
 
 ```typescript
-import { PQCIdentityManager } from "swarm-spawner";
+import { PQCIdentityManager } from "@taurus-ai/swarm-spawner";
 import { randomBytes } from "@noble/hashes/utils.js";
 
 const pqc = new PQCIdentityManager({ masterSeed: randomBytes(32) });
@@ -129,7 +130,7 @@ const isValid = PQCIdentityManager.verify(birthCert); // true
 Built-in licensing for Free / Pro / Enterprise:
 
 ```typescript
-import { TierEnforcer } from "swarm-spawner";
+import { TierEnforcer } from "@taurus-ai/swarm-spawner";
 
 const enforcer = new TierEnforcer(); // no key = free tier
 enforcer.enforce({ type: "agentCount", count: 10 });
@@ -149,7 +150,7 @@ enforcer.enforce({ type: "agentCount", count: 10 });
 The `ModelRouter` uses round-robin selection within each tier:
 
 ```typescript
-import { ModelRouter } from "swarm-spawner";
+import { ModelRouter } from "@taurus-ai/swarm-spawner";
 
 const router = new ModelRouter();
 const model = router.selectModel("deep"); // rotates through deep-tier models
@@ -231,7 +232,7 @@ PQC_MASTER_SEED=<32-byte-hex>  # for PQC identity
 - [x] **v0.2.0** — Pluggable executor, PQC identity (ML-DSA-65), tier enforcement
 - [ ] **v0.3.0** — AI SDK adapter (`@taurus-ai/swarm-spawner-ai-sdk`), `npx init` CLI
 - [ ] **v0.4.0** — EU AI Act compliance reports, topic-per-swarm audit
-- [ ] **v0.5.0** — Interactive playground, documentation site
+- [x] **v0.5.0** — Interactive playground with real PQC crypto ([live](https://taurus-ai-corp.github.io/swarm-spawner/))
 
 ---
 
@@ -264,4 +265,4 @@ MIT License with Patent Notice — See [LICENSE](LICENSE) for details.
 
 ---
 
-**TAURUS AI Corp** | [GitHub](https://github.com/Taurus-Ai-Corp/swarm-spawner) | [npm](https://www.npmjs.com/package/swarm-spawner)
+**TAURUS AI Corp** | [GitHub](https://github.com/Taurus-Ai-Corp/swarm-spawner) | [npm](https://www.npmjs.com/package/@taurus-ai/swarm-spawner)
