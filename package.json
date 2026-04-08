@@ -1,6 +1,6 @@
 {
   "name": "@taurus-ai/swarm-spawner",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Ephemeral AI agent orchestration system with Hedera blockchain auditability",
   "type": "module",
   "main": "./dist/index.js",

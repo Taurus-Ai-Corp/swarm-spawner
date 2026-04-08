@@ -170,7 +170,7 @@ export class HederaIntegration {
 
   private async submitAuditEntry(entry: AuditEntry): Promise<AuditEntry> {
     if (!this.topicId || !this.operatorId || !this.operatorKey) {
-      console.log("[Hedera] Audit entry (no topic configured):", entry);
+      // Silently skip — no topic configured. Caller gets the entry back without HCS metadata.
       return entry;
     }
 
